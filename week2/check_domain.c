@@ -66,7 +66,7 @@ int main(int argc , char *argv[])
 		exit(1);
 	}
 	
-	if (atoi(argv[1])==1){
+	if (strcmp(argv[1],"1")){
 		convert_ip_to_hostname(argv[2]);
 	}
 	else if (atoi(argv[1])==2){
