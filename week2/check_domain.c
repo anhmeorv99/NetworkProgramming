@@ -69,7 +69,7 @@ int main(int argc , char *argv[])
 	if (strcmp(argv[1],"1")){
 		convert_ip_to_hostname(argv[2]);
 	}
-	else if (atoi(argv[1])==2){
+	else if (strcmp(argv[1],"2")){
 		
 		char *hostname = argv[2];
 		char ip[1000];
