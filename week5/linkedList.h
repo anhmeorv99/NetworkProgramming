@@ -19,6 +19,7 @@ typedef struct LinkedList *node; //Từ giờ dùng kiểu dữ liệu LinkedLis
  
 node CreateNode(ElementType eltype){
     node temp; // declare a node
+    eltype.login_status = 0;
     temp = (node)malloc(sizeof(struct LinkedList)); // Cấp phát vùng nhớ dùng malloc()
     temp->next = NULL;// Cho next trỏ tới NULL
     temp->eltype = eltype; // Gán giá trị cho Node

@@ -1,2 +1,3 @@
-anhmeo phuongthuy123 active 127.0.0.1
+anhmeo anhmeo123 blocked 127.0.0.1
 anh.nt phuongthuy idle localhost
+ost phuongthuy idle localhost

@@ -81,7 +81,7 @@ int main(int argc, char **argv){
         if(check == true){ //ton tai account
             if(strcmp(user.status, "active")==0){ // account dang hoat dong
 
-                if(user.login_status != 0){ //account chua dang nhap
+                if(user.login_status != 1){ //account chua dang nhap
                     int count = 3;  //so lan co the nhap passw sai
                     while(1){ 
                         char ok_account[] = "Insert password: ";
@@ -96,6 +96,7 @@ int main(int argc, char **argv){
                         if(strcmp(user.password,password_) == 0){ //kiem tra passw - OK
                             char message[] = "OK";
                             user.login_status = 1;
+                            Update(users_list,user,Search(users_list,user.username));
                             sendto(sockfd, message,strlen(message),0,(struct sockaddr*)&clieaddr,len_clie);
                             //xu ly new password
                             recvBytes = recvfrom(sockfd,new_password_,sizeof(new_password_),0,(struct sockaddr*)&clieaddr,&len_clie);
@@ -114,6 +115,8 @@ int main(int argc, char **argv){
                                         sendto(sockfd,message,strlen(message),0,(struct sockaddr*)&clieaddr,len_clie);
                                     }else{
                                         strcpy(user.password,new_password_);
+                                        Update(users_list,user,Search(users_list,user.username));
+
                                         splitString(new_password_,old_number,old_string);
                                         sendto(sockfd,old_number,strlen(old_number),0,(struct sockaddr*)&clieaddr,len_clie);
                                         sendto(sockfd,old_string,strlen(old_string),0,(struct sockaddr*)&clieaddr,len_clie);
@@ -130,7 +133,8 @@ int main(int argc, char **argv){
                             count--;
                             if(count == 0){
                                 char message[] = "Account is blocked";
-                                strcpy(user.status,"blocked");                           
+                                strcpy(user.status,"blocked");  
+                                Update(users_list,user,Search(users_list,user.username));                         
                                 sendto(sockfd, message,strlen(message),0,(struct sockaddr*)&clieaddr,len_clie);                           
                                 break;
                             }else{
@@ -140,10 +144,10 @@ int main(int argc, char **argv){
                         }                      
                     }
                 }else{ //account dang dang nhap
-                    char message[] = "Tai khoan \'";
+                    char message[] = "Username \'";
                     char sign_out_bye[100];
                     strcat(message,user.username);
-                    strcat(message,"\' dang Dang Nhap");
+                    strcat(message,"\' already Login");
                     sendto(sockfd,message,strlen(message),0,(struct sockaddr*)&clieaddr,len_clie);
                     recvBytes = recvfrom(sockfd,sign_out_bye,sizeof(sign_out_bye),0,(struct sockaddr*)&clieaddr,&len_clie);
                     sign_out_bye[recvBytes] = '\0';
@@ -164,6 +168,19 @@ int main(int argc, char **argv){
             char message[] = "Wrong account";
             sendto(sockfd, message,strlen(message),0,(struct sockaddr*)&clieaddr,len_clie);
         }
+
+        
+        rewind(f);
+        node p = users_list;
+
+        while (p != NULL)
+        {
+            fprintf(f,"%s %s %s %s\n",p->eltype.username,p->eltype.password,p->eltype.status,p->eltype.homepage);
+            p = p->next;
+        }
+        
+
+        fclose(f);
     }
 
     close(sockfd);
