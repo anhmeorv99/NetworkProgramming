@@ -24,11 +24,7 @@ class Friends(models.Model):
 
 
 class Room(models.Model):
-    status = (
-        ('OPEN', 'OPEN'),
-        ('PRIVATE', 'PRIVATE')
-    )
-    room_status = models.CharField(choices=status, default=status[0][0], max_length=20)
+
     name = models.CharField(max_length=20, default=None, null=True)
     member = models.ManyToManyField(User)
     admin_room = models.IntegerField()
@@ -36,9 +32,16 @@ class Room(models.Model):
 
 class Message(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    member = models.ManyToManyField(User)
     from_user = models.IntegerField(null=False)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     # select * from message where to_id = id dang nhap
+
+
+class ChatPrivate(models.Model):
+    from_user = models.IntegerField(null=False)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE)
+

@@ -6,6 +6,7 @@ from chat_app_service.views.users import UserViewSet
 from chat_app_service.views.room import RoomViewSet
 from chat_app_service.views.message import MessageViewSet
 from chat_app_service.views.friends import FriendsViewSet
+from chat_app_service.views.chatprivate import ChatPrivateViewSet
 
 
 class CustomDefaultRouter(routers.DefaultRouter):
@@ -15,11 +16,11 @@ class CustomDefaultRouter(routers.DefaultRouter):
 
 router = CustomDefaultRouter()
 
-router.register(r'api/user', UserViewSet, basename='user')
-router.register(r'api/room', RoomViewSet, basename='user')
-router.register(r'api/message', MessageViewSet, basename='user')
-router.register(r'api/friends', FriendsViewSet, basename='user')
-
+router.register(r'api/user', UserViewSet, basename='name')
+router.register(r'api/room', RoomViewSet, basename='name')
+router.register(r'api/message', MessageViewSet, basename='name')
+router.register(r'api/friends', FriendsViewSet, basename='name')
+router.register(r'api/private', ChatPrivateViewSet, basename='name')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

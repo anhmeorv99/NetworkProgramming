@@ -1,11 +1,12 @@
 from django_filters import rest_framework as filters
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny
 from rest_framework import filters as rest_filters
 from rest_framework.response import Response
 
 from chat_app_service.serializer.room import RoomSerializer
 from chat_app_service.models import Room
+from collections import OrderedDict
 
 
 class RoomViewSet(viewsets.ModelViewSet):
@@ -16,14 +17,24 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        user = request.query_params.get('user')
-        if user:
-            queryset = Room.objects.filter(member=user)
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+        member = request.query_params.get('member')
 
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        if member is not None:
+
+            member = member.split(',')
+            for room in serializer.data:
+                flag = True
+                room_dict = dict(OrderedDict(room))
+                for id_member in room_dict['member']:
+                    if len(room_dict['member']) != len(member):
+                        flag = False
+                        break
+                    if str(id_member) not in member:
+                        flag = False
+                if flag:
+                    return Response([room])
+            if flag == False:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(serializer.data)
