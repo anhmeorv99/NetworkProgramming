@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from chat_app_service.serializer.room import RoomSerializer
 from chat_app_service.models import Room
-from collections import OrderedDict
+import requests
 
 
 class RoomViewSet(viewsets.ModelViewSet):
@@ -17,24 +17,37 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        member = request.query_params.get('member')
+        user = request.query_params.get('user')
+        if user is not None:
+            queryset = Room.objects.filter(member=user)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
-        if member is not None:
+        return Response(serializer.data)
 
-            member = member.split(',')
-            for room in serializer.data:
-                flag = True
-                room_dict = dict(OrderedDict(room))
-                for id_member in room_dict['member']:
-                    if len(room_dict['member']) != len(member):
-                        flag = False
-                        break
-                    if str(id_member) not in member:
-                        flag = False
-                if flag:
-                    return Response([room])
-            if flag == False:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        member = request.query_params.get('add_member')
+        room = request.query_params.get('room')
+        if member is not None and room is not None:
+            req = requests.get(f"http://127.0.0.1:8000/api/room/{room}/")
+            list_member = req.json()['member']
+            list_member.append(int(member))
+            data = {"member": list_member}
+
+            serializer = self.get_serializer(instance, data=data, partial=partial)
         else:
-            return Response(serializer.data)
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)

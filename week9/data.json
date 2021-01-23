@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "friend": 2,
+        "confirm": false,
+        "user": 1
+    },
+    {
+        "id": 2,
+        "friend": 3,
+        "confirm": false,
+        "user": 1
+    },
+    {
+        "id": 3,
+        "friend": 3,
+        "confirm": false,
+        "user": 2
+    },
+    {
+        "id": 4,
+        "friend": 4,
+        "confirm": true,
+        "user": 2
+    },
+    {
+        "id": 6,
+        "friend": 5,
+        "confirm": true,
+        "user": 2
+    }
+]

@@ -15,10 +15,11 @@ from chat_app_service.models import Friends
 class FriendsFilter(filters.FilterSet):
     confirm = filters.BooleanFilter()
     user = filters.NumberFilter()
+    friend = filters.NumberFilter()
 
     class Meta:
         model = Friends
-        fields = ['confirm', 'user']
+        fields = ['confirm', 'user', 'friend']
 
 
 class FriendsViewSet(viewsets.ModelViewSet):
@@ -31,10 +32,6 @@ class FriendsViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        # user = request.query_params.get('user')
-        # if user:
-        #     queryset = Friends.objects.filter(user=user)
-
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -57,3 +54,8 @@ class FriendsViewSet(viewsets.ModelViewSet):
                 return Response(data={"NOT FOUND FRIEND"}, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(data={"FRIEND NOT NULL"}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(data={"success": "Deleted !"}, status=status.HTTP_204_NO_CONTENT)

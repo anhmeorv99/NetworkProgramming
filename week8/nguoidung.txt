@@ -1,5 +1,3 @@
-anhmeo anh2 active 127.0.0.1
+anhmeo anh123 active 127.0.0.1
 anh.nt anh123 active localhost
 anhmeo123 phuongthanh active localhost
-
-

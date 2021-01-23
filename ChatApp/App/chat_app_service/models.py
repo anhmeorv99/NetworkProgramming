@@ -29,7 +29,7 @@ class Room(models.Model):
     member = models.ManyToManyField(User)
     admin_room = models.IntegerField()
 
-
+#
 class Message(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     from_user = models.IntegerField(null=False)
@@ -38,7 +38,7 @@ class Message(models.Model):
 
     # select * from message where to_id = id dang nhap
 
-
+#
 class ChatPrivate(models.Model):
     from_user = models.IntegerField(null=False)
     message = models.TextField()

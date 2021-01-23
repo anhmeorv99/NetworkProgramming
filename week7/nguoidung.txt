@@ -1,2 +1,2 @@
 anhmeo anhmeo123 active 127.0.0.1
-anh.nt phuongthuy idle localhost
+anh.nt phuongthuy active localhost
