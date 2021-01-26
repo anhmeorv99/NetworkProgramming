@@ -7,6 +7,7 @@ from rest_framework import filters as rest_filters
 from django_filters import rest_framework as filters
 from rest_framework.response import Response
 
+from App import settings
 from chat_app_service.serializer.friends import FriendsSerializer
 from chat_app_service.serializer.users import UserSerializer
 from chat_app_service.models import Friends
@@ -45,7 +46,7 @@ class FriendsViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         friend = request.data.get('friend', None)
         if friend:
-            req = requests.get(f'http://127.0.0.1:8000/api/user/{str(friend)}/')
+            req = requests.get(f'http://{settings.ALLOWED_HOSTS[0]}:8000/api/user/{str(friend)}/')
             if req.status_code != 404:
                 self.perform_create(serializer)
                 headers = self.get_success_headers(serializer.data)

@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField, ArrayField
 
 
 class User(models.Model):
@@ -24,12 +23,11 @@ class Friends(models.Model):
 
 
 class Room(models.Model):
-
     name = models.CharField(max_length=20, default=None, null=True)
     member = models.ManyToManyField(User)
     admin_room = models.IntegerField()
 
-#
+
 class Message(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     from_user = models.IntegerField(null=False)
@@ -38,10 +36,10 @@ class Message(models.Model):
 
     # select * from message where to_id = id dang nhap
 
+
 #
 class ChatPrivate(models.Model):
     from_user = models.IntegerField(null=False)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     to_user = models.ForeignKey(User, on_delete=models.CASCADE)
-

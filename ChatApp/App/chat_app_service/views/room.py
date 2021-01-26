@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import filters as rest_filters
 from rest_framework.response import Response
 
+from App import settings
 from chat_app_service.serializer.room import RoomSerializer
 from chat_app_service.models import Room
 import requests
@@ -34,7 +35,7 @@ class RoomViewSet(viewsets.ModelViewSet):
         member = request.query_params.get('add_member')
         room = request.query_params.get('room')
         if member is not None and room is not None:
-            req = requests.get(f"http://127.0.0.1:8000/api/room/{room}/")
+            req = requests.get(f"http://{settings.ALLOWED_HOSTS[0]}:8000/api/room/{room}/")
             list_member = req.json()['member']
             list_member.append(int(member))
             data = {"member": list_member}
